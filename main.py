@@ -2,7 +2,7 @@ import os
 
 from flask import Flask, flash, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
-from . import construct_results
+import construct_results
 
 
 # create and configure the app
