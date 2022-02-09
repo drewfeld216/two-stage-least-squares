@@ -1,2 +1,2 @@
 Flask==1.1.2
-Pyt
+gunicorn==19.0.0
