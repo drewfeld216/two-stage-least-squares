@@ -13,6 +13,7 @@ app.config.from_mapping(
     DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
 )
 
+data = 0
 
 app.config['UPLOAD_FOLDER'] = './app/static/uploads'
 
@@ -46,7 +47,7 @@ def upload_file():
         if file:
             filename = secure_filename(file.filename)
             g_filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(g_filepath)
+            #file.save(g_filepath)
             cols = construct_results.getColsAsIterable(g_filepath)
             app.config['UPLOAD_LOCATION'] = g_filepath
             return render_template('results.html', filename=filename, columns=cols)
