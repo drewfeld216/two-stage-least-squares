@@ -22,13 +22,12 @@ def runRegression(filepath, data_dict):
 	endog_cols = [ col for col in data_cols if col in data_dict['endog'] ]	
 	exog_cols = [ col for col in data_cols if col in data_dict['exog'] ]
 	instr_cols = [ col for col in data_cols if col in data_dict['instr'] ]
-	print(instr_cols)
 	
 	if len(endog_cols) > 1:
 		raise IndexError
 		
 	if len(instr_cols) != len(exog_cols):
-		raise IndexError
+		raise ValueError
 		
 	endog = data[endog_cols].to_numpy()
 	exog = data[exog_cols].to_numpy()

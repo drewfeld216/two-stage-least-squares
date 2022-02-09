@@ -56,6 +56,8 @@ def get_regression():
                     
         try:
             results = construct_results.runRegression(app.config['UPLOAD_LOCATION'], data_dict)
+        except IndexError:
+            return "<p>You have selected too many output variables</p>"
         except:
             return "<p>Not able to fit regression model. Please check data and try again.</p>"
         
