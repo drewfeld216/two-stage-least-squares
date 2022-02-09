@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>2SLS</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+    <!-- Multi-select -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="static/css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <meta name="viewport" content="width=device-width user-scalable=no">
+{% endblock %}
+
+{% block content %}
+    <nav class="navbar navbar-dark bg-primary navbar-fixed-top">
+        <a class="navbar-brand" href="#">Two Stage Least Squares | Columbia Business School</a>
+        <ul class="navbar-nav px-3">
+      </ul>
+    </nav>
+
+    <br>
+    <br>
+    
+    <!-- Input and GET Request -->
+    <div class="container mx-auto center">
+
+        <div class="row">
+            <div class="col-6" id="form">
+                <h4>File: {{ filename }}</h4>
+            </div>
+            <div class="col-6" id="plot">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <form>
+                    <section class="ftco-section">
+                        <h6>Output Variable</h6>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-4 d-flex align-items-center">
+                                    <select class="js-select2" name="output" multiple="multiple" id="endog-select">
+                                        {% for col_name in columns %}
+                                            <option value="{{ col_name[1] }}" data-badge="">{{ col_name[0] }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="ftco-section">
+                        <h6>Input Variables</h6>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-4 d-flex align-items-center">
+                                    <select class="js-select2" name="input" multiple="multiple" id="exog-select">
+                                        {% for col_name in columns %}
+                                            <option value="{{ col_name[1] }}" data-badge="">{{ col_name[0] }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="ftco-section">
+                        <h6>Instruments</h6>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-4 d-flex align-items-center">
+                                    <select class="js-select2" name="instrument" multiple="multiple" id="instrument-select">
+                                        {% for col_name in columns %}
+                                            <option value="{{ col_name[1] }}" data-badge="">{{ col_name[0] }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="ftco-section">
+                        <h6>Replaced Variables</h6>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-4 d-flex align-items-center">
+                                    <select class="js-select2" name="replaced" multiple="multiple" id="replace-select">
+                                        {% for col_name in columns %}
+                                            <option value="{{ col_name[1] }}" data-badge="">{{ col_name[0] }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <button type="button" class="btn btn-success" id="run-regression">Run Regression</button>
+                </form>
+            </div>
+            <div class="col-6" id="reg-results">
+            </div>
+        </div>
+
+    </div>
+
+
+    </div>
+
+    <br>
+    <br>
+
+    <!-- Scripts -->
+    <script>
+        $("#run-regression").click(function(e){
+            e.preventDefault();
+            var endog = $("#endog-select").find(":selected").text()
+            var exog = $("#exog-select").find(":selected").text()
+            var instr = $("#instrument-select").find(":selected").text()
+            var repl = $("#replace-select").find(":selected").text()
+            
+            $("#reg-results").load("/get-regression", {'endog': endog, 'exog': exog, 'instr': instr, 'replace': repl}, function(){
+                $("#reg-results table").addClass("table table-striped");
+            });
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.8.9/jquery.csv.js" type="text/javascript"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+    <!-- Multi-select -->
+    <script src="static/js/jquery.min.js"></script>
+    <script src="static/js/popper.js"></script>
+    <script src="static/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+    <script src="static/js/main.js"></script>
+{% endblock %}
