@@ -21,8 +21,7 @@ def runRegression(filepath, data_dict):
 	
 	endog_cols = [ col for col in data_cols if col in data_dict['endog'] ]	
 	exog_cols = [ col for col in data_cols if col in data_dict['exog'] ]
-	repl_cols = [ col for col in data_cols if col in data_dict['replace'] ]
-	instr_cols = [ col for col in data_cols if col in data_dict['instr'] or (col in exog_cols and col not in repl_cols)]
+	instr_cols = [ col for col in data_cols if col in data_dict['instr'] ]
 	print(instr_cols)
 	
 	if len(endog_cols) > 1:
