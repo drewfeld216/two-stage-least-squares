@@ -3,7 +3,7 @@ import os
 from flask import Flask, flash, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
 import construct_results
-
+import urllib.parse as prs
 
 # create and configure the app
 app = Flask(__name__, instance_relative_config=True)
@@ -49,7 +49,7 @@ def upload_file():
 @app.route('/get-regression', methods=['POST', 'GET'])
 def get_regression(): 
     if request.method == 'POST':
-        data = request.get_data().decode('utf-8')
+        data = prs.unquote_plus(request.get_data().decode('utf-8'))
         data = data.split('&')
         data = [section.split("=") for section in data]
         data_dict = {bit[0]:bit[1] for bit in data}
