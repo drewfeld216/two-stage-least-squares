@@ -59,13 +59,9 @@ def runRegression(filepath, data_dict):
 		instr_only = np.concatenate([instr_only, np.ones(instr_only.shape)], axis=1)
 		
 		mod_ols = sm.OLS(exog_only, instr_only)
-		print(mod_ols)
 		reg_ols = mod_ols.fit()
-		print(reg_ols)
 		instr_only_cols.append('const')
-		print(instr_only_cols)
 		summ_ols = reg_ols.summary(yname=exog_only_cols[0], xname=instr_only_cols)
-		print(summ_ols)
 		output += getOLSOutputTable(summ_ols)
 		
 		return output
