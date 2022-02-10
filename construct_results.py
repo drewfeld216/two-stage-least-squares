@@ -1,7 +1,9 @@
 import os
 import pandas as pd
 from statsmodels.sandbox.regression.gmm import IV2SLS
+import statsmodels.api as sm
 import numpy as np
+
 
 def getColsAsIterable(filename):
 	df_file = pd.read_csv(filename)
