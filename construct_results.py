@@ -16,56 +16,54 @@ def runRegression(filepath, data_dict):
 	data = pd.read_csv(filepath)
 	data_cols = list(data.columns)
 		
+	dep_cols = [ col for col in data_cols if col in data_dict['dep'] ]	
 	endog_cols = [ col for col in data_cols if col in data_dict['endog'] ]	
 	exog_cols = [ col for col in data_cols if col in data_dict['exog'] ]
 	instr_cols = [ col for col in data_cols if col in data_dict['instr'] ]
-		
-	if len(endog_cols) > 1:
+				
+	if len(dep_cols) > 1:
 		raise IndexError
 		
-	if (len(instr_cols) != len(exog_cols)) and len(instr_cols) > 0:
+	if (len(instr_cols) != len(endog_cols)) and len(instr_cols) > 0:
 		raise ValueError
 		
+		
+	dep = data[dep_cols].to_numpy()
 	endog = data[endog_cols].to_numpy()
 	exog = data[exog_cols].to_numpy()
 	instr = data[instr_cols].to_numpy()
-		
-	const = np.ones(endog.shape)
 	
-	exog = np.concatenate([exog, const], axis=1)
-	instr = np.concatenate([instr, const], axis=1)
+	const = np.ones(dep.shape)
+	
+	exog_comb = np.concatenate([exog, endog, const], axis=1)
+	instr_comb = np.concatenate([exog, instr, const], axis=1)
+		
+	x_cols = exog_cols + endog_cols
+	x_cols.append('const')
 
 	if len(instr_cols) == 0:
-		mod = sm.OLS(endog, exog)
+		mod = sm.OLS(dep, exog_comb)
 		reg = mod.fit()
-		exog_cols.append('const')
-		summ = reg.summary(yname=endog_cols[0], xname=exog_cols)
+
+		summ = reg.summary(yname=dep_cols[0], xname=x_cols)
 		output = getOLSOutputTable(summ)
 		return output
 	
 	else:
-		mod_2sls = IV2SLS(endog, exog, instr)
+		mod_2sls = IV2SLS(dep, exog_comb, instr_comb)
 		reg_2sls = mod_2sls.fit()
-		exog_cols.append('const')
-		summ_2sls = reg_2sls.summary(yname=endog_cols[0], xname=exog_cols)
+		summ_2sls = reg_2sls.summary(yname=dep_cols[0], xname=x_cols)
 		output = get2SLSOutputTable(summ_2sls)
-		
-		exog_only_cols = [col for col in exog_cols if col not in instr_cols and col != 'const']
-		instr_only_cols = [col for col in instr_cols if col not in exog_cols and col != 'const']
-
-		exog_only = data[exog_only_cols].to_numpy()
-		instr_only = data[instr_only_cols].to_numpy()
 				
-		instr_only = np.concatenate([instr_only, np.ones(instr_only.shape)], axis=1)
-		
-		mod_ols = sm.OLS(exog_only, instr_only)
+		instr_plus_const = np.concatenate([instr, const], axis=1)			
+		mod_ols = sm.OLS(endog, instr_plus_const)
 		reg_ols = mod_ols.fit()
-		instr_only_cols.append('const')
-		summ_ols = reg_ols.summary(yname=exog_only_cols[0], xname=instr_only_cols)
+		instr_cols.append('const')
+		summ_ols = reg_ols.summary(yname=endog_cols[0], xname=instr_cols)
 		output += getOLSOutputTable(summ_ols)
 		
 		return output
-	
+		
 def getOLSOutputTable(summary):
 	main_table = summary.tables[1].data
 		
@@ -89,27 +87,27 @@ def getOLSOutputTable(summary):
 		if i == 0:
 			out += '    <thead>' + '\n'
 			out += '        <tr>' + '\n'
-			out += '            <th scope"col">' + str(i) + '</th>' + '\n'
+			out += '            <th scope"col" class="font-weight-normal">' + str(i) + '</th>' + '\n'
 			for col in cols:
-				out += '            <th scope"col">' + str(row[col]) + '</th>' + '\n'
+				out += '            <th scope"col" class="font-weight-normal">' + str(row[col]) + '</th>' + '\n'
 			out += '        </tr>' + '\n'
 			out += '    </thead>' + '\n'
 			out += '    <tbody>' + '\n'
 		else:
 			out += '        <tr>' + '\n'
-			out += '            <th scope"col">' + str(i) + '</th>' + '\n'
+			out += '            <th scope"col" class="font-weight-normal">' + str(i) + '</th>' + '\n'
 			for col in cols:
-				out += '            <th scope"col">' + str(row[col]) + '</th>' + '\n'
+				out += '            <th scope"col" class="font-weight-normal">' + str(row[col]) + '</th>' + '\n'
 			out += '        </tr>' + '\n'
 	out += '        <tr>' + '\n'
-	out += '            <th scope"col">r-squared</th>' + '\n'
-	out += '            <th scope"col">' + str(r2) + '</th>' + '\n'
+	out += '            <th scope"col" class="font-weight-normal">r-squared</th>' + '\n'
+	out += '            <th scope"col" class="font-weight-normal">' + str(r2) + '</th>' + '\n'
 	for j in range(len(cols)-1):	
-		out += '            <th scope"col"></th>' + '\n'
+		out += '            <th scope"col" class="font-weight-normal"></th>' + '\n'
 	out += '        </tr>' + '\n'
 	out += '        <tr>' + '\n'
-	out += '            <th scope"col">no. observations</th>' + '\n'
-	out += '            <th scope"col">' + str(nobs) + '</th>' + '\n'
+	out += '            <th scope"col" class="font-weight-normal">no. observations</th>' + '\n'
+	out += '            <th scope"col" class="font-weight-normal">' + str(nobs) + '</th>' + '\n'
 	for j in range(len(cols)-1):
 		out += '            <th scope"col"></th>' + '\n'
 	out += '        </tr>' + '\n'
@@ -142,27 +140,27 @@ def get2SLSOutputTable(summary):
 		if i == 0:
 			out += '    <thead>' + '\n'
 			out += '        <tr>' + '\n'
-			out += '            <th scope"col">' + str(i) + '</th>' + '\n'
+			out += '            <th scope"col" class="font-weight-normal">' + str(i) + '</th>' + '\n'
 			for col in cols:
-				out += '            <th scope"col">' + str(row[col]) + '</th>' + '\n'
+				out += '            <th scope"col" class="font-weight-normal">' + str(row[col]) + '</th>' + '\n'
 			out += '        </tr>' + '\n'
 			out += '    </thead>' + '\n'
 			out += '    <tbody>' + '\n'
 		else:
 			out += '        <tr>' + '\n'
-			out += '            <th scope"col">' + str(i) + '</th>' + '\n'
+			out += '            <th scope"col" class="font-weight-normal">' + str(i) + '</th>' + '\n'
 			for col in cols:
-				out += '            <th scope"col">' + str(row[col]) + '</th>' + '\n'
+				out += '            <th scope"col" class="font-weight-normal">' + str(row[col]) + '</th>' + '\n'
 			out += '        </tr>' + '\n'
 	out += '        <tr>' + '\n'
-	out += '            <th scope"col">r-squared</th>' + '\n'
-	out += '            <th scope"col">' + str(r2) + '</th>' + '\n'
+	out += '            <th scope"col" class="font-weight-normal">r-squared</th>' + '\n'
+	out += '            <th scope"col" class="font-weight-normal">' + str(r2) + '</th>' + '\n'
 	for j in range(len(cols)-1):
 		out += '            <th scope"col"></th>' + '\n'
 	out += '        </tr>' + '\n'
 	out += '        <tr>' + '\n'
-	out += '            <th scope"col">no. observations</th>' + '\n'
-	out += '            <th scope"col">' + str(nobs) + '</th>' + '\n'
+	out += '            <th scope"col" class="font-weight-normal">no. observations</th>' + '\n'
+	out += '            <th scope"col" class="font-weight-normal">' + str(nobs) + '</th>' + '\n'
 	for j in range(len(cols)-1):
 		out += '            <th scope"col"></th>' + '\n'
 	out += '        </tr>' + '\n'
