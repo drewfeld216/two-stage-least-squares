@@ -6,21 +6,31 @@ import numpy as np
 
 
 def getColsAsIterable(filename):
-	df_file = pd.read_csv(filename)
+	if '.csv' in filename:
+		df_file = pd.read_csv(filename)
+		
+	elif '.xlsx' in filename:
+		df_file = pd.read_excel(filename)
+		
 	cols = list(df_file.columns)
 	count = list(range(len(cols)))
 	out = [(col, i) for col, i in zip(cols, count)]
+		
 	return out
 
 def runRegression(filepath, data_dict):
-	data = pd.read_csv(filepath)
-	data_cols = list(data.columns)
+	if '.csv' in filepath:
+		data = pd.read_csv(filepath)
+	elif '.xlsx' in filepath:
+		data = pd.read_excel(filepath)
 		
-	dep_cols = [ col for col in data_cols if col in data_dict['dep'] ]	
-	endog_cols = [ col for col in data_cols if col in data_dict['endog'] ]	
-	exog_cols = [ col for col in data_cols if col in data_dict['exog'] ]
-	instr_cols = [ col for col in data_cols if col in data_dict['instr'] ]
-				
+	data_cols = list(data.columns)
+	
+	dep_cols = [ data_cols[i] for i in range(len(data_cols)) if i in data_dict['dep'] ]	
+	endog_cols = [ data_cols[i] for i in range(len(data_cols)) if i in data_dict['endog'] ]	
+	exog_cols = [ data_cols[i] for i in range(len(data_cols)) if i in data_dict['exog'] ]
+	instr_cols = [ data_cols[i] for i in range(len(data_cols)) if i in data_dict['instr'] ]
+		
 	if len(dep_cols) > 1:
 		raise IndexError
 		

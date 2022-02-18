@@ -119,11 +119,11 @@
     <script>
         $("#run-regression").click(function(e){
             e.preventDefault();
-            var dep  = $("#dep-select").find(":selected").text()
-            var endog = $("#endog-select").find(":selected").text()
-            var exog = $("#exog-select").find(":selected").text()
-            var instr = $("#instrument-select").find(":selected").text()
-            
+            var dep  = $("#dep-select").val()
+            var endog = $("#endog-select").val()
+            var exog = $("#exog-select").val()
+            var instr = $("#instrument-select").val()
+
             $("#reg-results").load("/get-regression", {'dep': dep, 'endog': endog, 'exog': exog, 'instr': instr}, function(){
                 $("#reg-results table").addClass("table table-striped");
             });

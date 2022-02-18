@@ -52,7 +52,9 @@ def get_regression():
         data = prs.unquote_plus(request.get_data().decode('utf-8'))
         data = data.split('&')
         data = [section.split("=") for section in data]
-        data_dict = {bit[0]:bit[1] for bit in data}
+        data_dict = {'dep': [], 'endog': [], 'exog': [], 'instr': []}
+        for bit in data:
+            data_dict[bit[0][:-2]].append(int(bit[1]))
                     
         try:
             results = construct_results.runRegression(app.config['UPLOAD_LOCATION'], data_dict)
