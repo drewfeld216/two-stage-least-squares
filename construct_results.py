@@ -57,6 +57,7 @@ def runRegression(filepath, data_dict):
 
 		summ = reg.summary(yname=dep_cols[0], xname=x_cols)
 		output = getOLSOutputTable(summ)
+		output += copyButton()
 		return output
 	
 	else:
@@ -65,12 +66,13 @@ def runRegression(filepath, data_dict):
 		summ_2sls = reg_2sls.summary(yname=dep_cols[0], xname=x_cols)
 		output = get2SLSOutputTable(summ_2sls)
 				
-		instr_plus_const = np.concatenate([instr, const], axis=1)			
-		mod_ols = sm.OLS(endog, instr_plus_const)
+		mod_ols = sm.OLS(endog, instr_comb)
 		reg_ols = mod_ols.fit()
-		instr_cols.append('const')
-		summ_ols = reg_ols.summary(yname=endog_cols[0], xname=instr_cols)
+		ols_cols = exog_cols + instr_cols
+		ols_cols.append('const')
+		summ_ols = reg_ols.summary(yname=endog_cols[0], xname=ols_cols)
 		output += getOLSOutputTable(summ_ols)
+		output += copyButton()
 		
 		return output
 		
@@ -179,3 +181,7 @@ def get2SLSOutputTable(summary):
 	#print(out)
 		
 	return '2SLS Regression Results\n' + out
+	
+def copyButton():
+	out = '\n<button class="btn btn-secondary" id="copy">Copy Output</button>'
+	return out

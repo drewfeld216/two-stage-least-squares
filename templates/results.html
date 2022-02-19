@@ -31,8 +31,7 @@
     <br>
     <br>
     
-    <!-- Input and GET Request -->
-    <div class="container mx-auto center">
+    <div class="container mx-auto center" style="margin-left:20px; margin-right:20px">
 
         <div class="row">
             <div class="col-6" id="form">
@@ -126,6 +125,14 @@
 
             $("#reg-results").load("/get-regression", {'dep': dep, 'endog': endog, 'exog': exog, 'instr': instr}, function(){
                 $("#reg-results table").addClass("table table-striped");
+                $("#copy").click(function(e){
+                    var theClipboard = navigator.clipboard;
+                    var copy = $('table');
+                    copy.select();
+                    copyText = copy.text();
+                    navigator.permissions.query({name:'clipboard-write'}).then(function(result){ });
+                    var promise = theClipboard.writeText(copyText);
+                });
             });
         });
     </script>
