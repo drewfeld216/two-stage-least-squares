@@ -121,6 +121,7 @@
             var endog = $("#endog-select").val()
             var exog = $("#exog-select").val()
             var instr = $("#instrument-select").val()
+            alert(dep, endog, exog, instr);
 
             $("#reg-results").load("/get-regression", {'dep': dep, 'endog': endog, 'exog': exog, 'instr': instr}, function(){
                 $("#reg-results table").addClass("table table-striped");
