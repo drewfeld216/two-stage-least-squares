@@ -1,5 +1,4 @@
 import os
-import sys
 import pandas as pd
 from statsmodels.sandbox.regression.gmm import IV2SLS
 import statsmodels.api as sm
@@ -31,9 +30,7 @@ def runRegression(filepath, data_dict):
 	endog_cols = [ data_cols[i] for i in range(len(data_cols)) if i in data_dict['endog'] ]	
 	exog_cols = [ data_cols[i] for i in range(len(data_cols)) if i in data_dict['exog'] ]
 	instr_cols = [ data_cols[i] for i in range(len(data_cols)) if i in data_dict['instr'] ]
-	
-	print(dep_cols, filename=sys.stderr)
-	
+		
 	print
 		
 	if len(dep_cols) > 1:
