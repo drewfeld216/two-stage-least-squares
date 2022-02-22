@@ -11,7 +11,6 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-
     <!-- Multi-select -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="static/css/style.css">
@@ -31,7 +30,7 @@
     <br>
     <br>
     
-    <div class="container mx-auto center" style="margin-left:20px; margin-right:20px">
+    <div class="container-results mx-auto center" id="main-container" style="margin-left: 5vw !important; margin-right: 5vw !important;">
 
         <div class="row">
             <div class="col-6" id="form">
@@ -41,12 +40,12 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-6">
+            <div class="col-4">
                 <form>
                     <section class="ftco-section">
                         <h6>Dependent Variable (e.g. Outcome Variable)</h6>
                         <div class="container">
-                            <div class="row">
+                            <div class="row" style="margin-left:0px">
                                 <div class="col-lg-4 d-flex align-items-center">
                                     <select class="js-select2" name="dep" multiple="multiple" id="dep-select">
                                         {% for col_name in columns %}
@@ -60,7 +59,7 @@
                     <section class="ftco-section">
                         <h6>Exogenous Explanatory Variables</h6>
                         <div class="container">
-                            <div class="row">
+                            <div class="row" style="margin-left:0px">
                                 <div class="col-lg-4 d-flex align-items-center">
                                     <select class="js-select2" name="exog" multiple="multiple" id="exog-select">
                                         {% for col_name in columns %}
@@ -74,7 +73,7 @@
                     <section class="ftco-section">
                         <h6>Endogenous Explanatory Variables</h6>
                         <div class="container">
-                            <div class="row">
+                            <div class="row" style="margin-left:0px">
                                 <div class="col-lg-4 d-flex align-items-center">
                                     <select class="js-select2" name="endog" multiple="multiple" id="endog-select">
                                         {% for col_name in columns %}
@@ -88,7 +87,7 @@
                     <section class="ftco-section">
                         <h6>Instrumental Variables</h6>
                         <div class="container">
-                            <div class="row">
+                            <div class="row" style="margin-left:0px">
                                 <div class="col-lg-4 d-flex align-items-center">
                                     <select class="js-select2" name="instrument" multiple="multiple" id="instrument-select">
                                         {% for col_name in columns %}
@@ -102,7 +101,7 @@
                     <button type="button" class="btn btn-success" id="run-regression">Run Regression</button>
                 </form>
             </div>
-            <div class="col-6" id="reg-results">
+            <div class="col-8" id="reg-results">
             </div>
         </div>
 
@@ -126,12 +125,29 @@
             $("#reg-results").load("/get-regression", {'dep': dep, 'endog': endog, 'exog': exog, 'instr': instr}, function(){
                 $("#reg-results table").addClass("table table-striped");
                 $("#copy").click(function(e){
-                    var theClipboard = navigator.clipboard;
-                    var copy = $('table');
-                    copy.select();
-                    copyText = copy.text();
-                    navigator.permissions.query({name:'clipboard-write'}).then(function(result){ });
-                    var promise = theClipboard.writeText(copyText);
+                    var el = document.getElementById("reg-results")
+                    var body = document.body, range, sel;
+                    if (document.createRange && window.getSelection) {
+                        range = document.createRange();
+                        sel = window.getSelection();
+                        sel.removeAllRanges();
+                        try {
+                            range.selectNode(el);
+                            range.selectNodeContents(el);
+                            sel.addRange(range);
+                        } catch (e) {
+                            range.selectNode(el);
+                            sel.addRange(range);
+                        }
+                        document.execCommand("copy");
+
+                    } else if (body.createTextRange) {
+                        range = body.createTextRange();
+                        range.moveToElementText(el);
+                        range.select();
+                        range.execCommand("Copy");
+                    }
+                    return;
                 });
             });
         });
