@@ -48,7 +48,8 @@ def upload_file():
     return render_template('home.html')
     
 @app.route('/get-regression', methods=['POST', 'GET'])
-def get_regression(): 
+def get_regression():
+    print(app.config['UPLOAD_LOCATION'], file=std.stderr)
     if request.method == 'POST':
         data = prs.unquote_plus(request.get_data().decode('utf-8'))
         data = data.split('&')
