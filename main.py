@@ -16,6 +16,7 @@ app.config.from_mapping(
 
 
 app.config['UPLOAD_FOLDER'] = './static/uploads'
+global upload_path
 
 # ensure the instance folder exists
 try:
@@ -42,7 +43,7 @@ def upload_file():
             g_filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(g_filepath)
             cols = construct_results.getColsAsIterable(g_filepath)
-            app.config['UPLOAD_LOCATION'] = g_filepath
+            upload_path = g_filepath
             return render_template('results.html', filename=filename, columns=cols)
     
     return render_template('home.html')
@@ -58,7 +59,7 @@ def get_regression():
             data_dict[bit[0][:-2]].append(int(bit[1]))
                                 
         try:
-            filepath = app.config['UPLOAD_LOCATION']
+            filepath = upload_path
             print(filepath, file=sys.stderr)
             results = construct_results.runRegression(filepath, data_dict)
         except IndexError:
