@@ -57,7 +57,6 @@ def get_regression():
         for bit in data:
             data_dict[bit[0][:-2]].append(int(bit[1]))
                                 
-        print(app.config['UPLOAD_LOCATION'], file=sys.stderr)
         try:
             results = construct_results.runRegression(app.config['UPLOAD_LOCATION'], data_dict)
         except IndexError:
