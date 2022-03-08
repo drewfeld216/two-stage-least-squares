@@ -57,7 +57,7 @@ def get_regression():
         print(data, file=sys.stderr)
         data_dict = {'dep': [], 'endog': [], 'exog': [], 'instr': []}
         for bit in data:
-            if bit[0][:-2] == 'file':
+            if bit[0] == 'file':
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], bit[1])
             else:
                 data_dict[bit[0][:-2]].append(int(bit[1]))
