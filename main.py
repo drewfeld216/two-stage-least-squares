@@ -54,12 +54,16 @@ def get_regression():
         data = prs.unquote_plus(request.get_data().decode('utf-8'))
         data = data.split('&')
         data = [section.split("=") for section in data]
+        print(data, file=sys.stderr)
         data_dict = {'dep': [], 'endog': [], 'exog': [], 'instr': []}
         for bit in data:
-            data_dict[bit[0][:-2]].append(int(bit[1]))
+            if bit[0][:-2] == 'file':
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], bit[1])
+            else:
+                data_dict[bit[0][:-2]].append(int(bit[1]))
                                 
         try:
-            filepath = upload_path
+            #filepath = upload_path
             print(filepath, file=sys.stderr)
             results = construct_results.runRegression(filepath, data_dict)
         except IndexError:
