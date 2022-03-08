@@ -59,6 +59,7 @@ def get_regression():
                                 
         try:
             filepath = app.config['UPLOAD_LOCATION']
+            print(filepath, file=sys.stderr)
             results = construct_results.runRegression(filepath, data_dict)
         except IndexError:
             return "<p>You have selected too many outcome variables.</p>"
