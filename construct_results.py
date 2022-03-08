@@ -73,12 +73,12 @@ def runRegression(filepath, data_dict):
 		ols_cols = exog_cols + instr_cols
 		ols_cols.append('const')
 		summ_ols = reg_ols.summary(yname=endog_cols[0], xname=ols_cols)
-		output += getOLSOutputTable(summ_ols)
+		output += getOLSOutputTable(summ_ols, two_stage = True)
 		output += copyButton()
 		
 		return output
 		
-def getOLSOutputTable(summary):
+def getOLSOutputTable(summary, two_stage = False):
 	main_table = summary.tables[1].data
 		
 	additional_info = summary.tables[0].data
@@ -127,9 +127,11 @@ def getOLSOutputTable(summary):
 	out += '        </tr>' + '\n'
 	out += '    </tbody>' + '\n'
 	out += '</table>' + '\n'
-	#print(out)
 		
-	return 'OLS Regression Results\n' + out
+	if two_stage:
+		return 'First stage regression results' + out
+	else:
+		return 'OLS regression results\n' + out
 	
 def get2SLSOutputTable(summary):
 	main_table = summary.tables[1].data
@@ -182,7 +184,7 @@ def get2SLSOutputTable(summary):
 	out += '</table>' + '\n'
 	#print(out)
 		
-	return '2SLS Regression Results\n' + out
+	return '2SLS regression results\n' + out
 	
 def copyButton():
 	out = '\n<button class="btn btn-secondary" id="copy">Copy Output</button>'
