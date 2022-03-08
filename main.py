@@ -56,15 +56,13 @@ def get_regression():
         data_dict = {'dep': [], 'endog': [], 'exog': [], 'instr': []}
         for bit in data:
             data_dict[bit[0][:-2]].append(int(bit[1]))
-            
-        print(data_dict, file=sys.stderr)
-                    
+                                
         try:
             results = construct_results.runRegression(app.config['UPLOAD_LOCATION'], data_dict)
         except IndexError:
             return "<p>You have selected too many outcome variables.</p>"
         except Exception as e:
-            print(e, file=sys.stderr)
+            print(e, file = sys.stderr)
             return "<p>Not able to fit regression model. Please check data and try again.</p>"
         
     return results
