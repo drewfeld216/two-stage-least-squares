@@ -26,15 +26,12 @@ def runRegression(filepath, data_dict):
 		data = pd.read_excel(filepath)
 		
 	data_cols = list(data.columns)
-	print(data_cols, file=sys.stderr)
 	
 	dep_cols = [ data_cols[i] for i in range(len(data_cols)) if i in data_dict['dep'] ]	
 	endog_cols = [ data_cols[i] for i in range(len(data_cols)) if i in data_dict['endog'] ]	
 	exog_cols = [ data_cols[i] for i in range(len(data_cols)) if i in data_dict['exog'] ]
 	instr_cols = [ data_cols[i] for i in range(len(data_cols)) if i in data_dict['instr'] ]
-		
-	print
-		
+				
 	if len(dep_cols) > 1:
 		raise IndexError
 		

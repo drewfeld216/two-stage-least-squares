@@ -58,7 +58,8 @@ def get_regression():
             data_dict[bit[0][:-2]].append(int(bit[1]))
                                 
         try:
-            results = construct_results.runRegression(app.config['UPLOAD_LOCATION'], data_dict)
+            filepath = app.config['UPLOAD_LOCATION']
+            results = construct_results.runRegression(filepath, data_dict)
         except IndexError:
             return "<p>You have selected too many outcome variables.</p>"
         except Exception as e:
