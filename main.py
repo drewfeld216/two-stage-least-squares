@@ -16,7 +16,6 @@ app.config.from_mapping(
 
 
 app.config['UPLOAD_FOLDER'] = './static/uploads'
-global upload_path
 
 # ensure the instance folder exists
 try:
@@ -43,6 +42,7 @@ def upload_file():
             g_filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(g_filepath)
             cols = construct_results.getColsAsIterable(g_filepath)
+            global upload_path
             upload_path = g_filepath
             return render_template('results.html', filename=filename, columns=cols)
     
