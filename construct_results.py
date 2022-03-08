@@ -1,4 +1,5 @@
 import os
+import sys
 import pandas as pd
 from statsmodels.sandbox.regression.gmm import IV2SLS
 import statsmodels.api as sm
@@ -25,6 +26,7 @@ def runRegression(filepath, data_dict):
 		data = pd.read_excel(filepath)
 		
 	data_cols = list(data.columns)
+	print(data_cols, file=sys.stderr)
 	
 	dep_cols = [ data_cols[i] for i in range(len(data_cols)) if i in data_dict['dep'] ]	
 	endog_cols = [ data_cols[i] for i in range(len(data_cols)) if i in data_dict['endog'] ]	
